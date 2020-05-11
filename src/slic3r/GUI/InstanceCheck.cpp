@@ -73,7 +73,7 @@ namespace instance_check_internal
 
 			HWND hwndSubclass;     // handle of a subclassed window 
 			HGLOBAL hMemProp;
-			char* lpFilename;
+			WCHAR* lpFilename;
 			TCHAR tchBuffer[PATHLENGTH];
 			size_t* nSize;
 			HDC hdc;
@@ -82,7 +82,7 @@ namespace instance_check_internal
 			// Get the window properties, then use the data. 
 			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"PROP_BUFFER");
 			BOOST_LOG_TRIVIAL(debug) << "global lock";
-			lpFilename = (char*)GlobalLock(hMemProp);
+			lpFilename = (WCHAR*)GlobalLock(hMemProp);
 			//hResult = StringCchPrintf(tchBuffer, PATHLENGTH,
 			//	"Path to file:  %s", lpFilename);
 			//if (FAILED(hResult))
