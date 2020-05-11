@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include <strsafe.h>
+
 #if __linux__
 #include <dbus/dbus.h> /* Pull in all of D-Bus headers. */
 #endif //__linux__
@@ -78,21 +80,21 @@ namespace instance_check_internal
 			HRESULT hResult;
 
 			// Get the window properties, then use the data. 
-			hMemProp = (HGLOBAL)GetProp(hwndSubclass, "PROP_BUFFER");
-			lpFilename = GlobalLock(hMemProp);
-			hResult = StringCchPrintf(tchBuffer, PATHLENGTH,
-				"Path to file:  %s", lpFilename);
-			if (FAILED(hResult))
-			{
+			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"PROP_BUFFER");
+			lpFilename = (char*)GlobalLock(hMemProp);
+			//hResult = StringCchPrintf(tchBuffer, PATHLENGTH,
+			//	"Path to file:  %s", lpFilename);
+			//if (FAILED(hResult))
+			//{
 				// TODO: write error handler if function fails.
-			}
-			hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
-			if (FAILED(hResult))
-			{
+			//}
+			//hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
+			//if (FAILED(hResult))
+			//{
 				// TODO: write error handler if function fails.
-			}
+			//}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
-			BOOST_LOG_TRIVIAL(info) << "window info: " << tchbuffer;
+			BOOST_LOG_TRIVIAL(info) << "window info: " << lpFilename;
 
 
 			return false;
@@ -287,24 +289,24 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
 	char*     lpMem;
-	TCHAR     tchPath[] = "c:\\winnt\\samples\\winprop.c";
+	TCHAR     tchPath[] = L"c:\\winnt\\samples\\winprop.c";
 	HRESULT   hResult;
 
 	// Allocate and fill a memory buffer. 
 	hMem = GlobalAlloc(GPTR, 4096);
-	lpMem = GlobalLock(hMem);
+	lpMem = (char*)GlobalLock(hMem);
 	if (lpMem == NULL)
 	{
 		// TODO: write error handler
 	}
-	hResult = StringCchCopy(lpMem, STRSAFE_MAX_CCH, tchPath);
+	hResult = StringCchCopy(lpMem, 256, tchPath);
 	if (FAILED(hResult))
 	{
 		// TO DO: write error handler if function fails.
 	}
 	GlobalUnlock(hMem);
 	// Set the window properties for hwndSubclass. 
-	SetProp(hwnd, "PROP_BUFFER", hMem);
+	SetProp(hwnd, L"PROP_BUFFER", hMem);
 
 #endif  //_WIN32
 
