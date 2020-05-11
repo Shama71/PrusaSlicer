@@ -273,7 +273,7 @@ namespace GUI {
 wxDEFINE_EVENT(EVT_LOAD_MODEL_OTHER_INSTANCE, LoadFromOtherInstanceEvent);
 wxDEFINE_EVENT(EVT_INSTANCE_GO_TO_FRONT, InstanceGoToFrontEvent);
 
-void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
+void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainFrame* main_frame)
 {
 	assert(!m_initialized);
 	assert(m_callback_evt_handler == nullptr);
@@ -286,7 +286,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 #if _WIN32 
 	//create_listener_window();
 	BOOST_LOG_TRIVIAL(debug) << "window info start";
-	HWND      hwnd = wxGetApp().mainframe->GetHandle();
+	HWND      hwnd = main_frame->GetHandle();
 	BOOST_LOG_TRIVIAL(debug) << "got handle";
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
