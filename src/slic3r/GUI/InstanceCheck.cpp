@@ -84,7 +84,7 @@ namespace instance_check_internal
 			BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (WCHAR*)GlobalLock(hMemProp);
 			BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
-			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, "Path to file:  %s", lpFilename);
+			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%s", lpFilename);
 			if (FAILED(hResult))
 			{
 				BOOST_LOG_TRIVIAL(debug) << "failed";
