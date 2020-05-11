@@ -98,7 +98,7 @@ namespace instance_check_internal
 				// TODO: write error handler if function fails.
 			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
-			BOOST_LOG_TRIVIAL(info) << "window info: " << lpFilename;
+			BOOST_LOG_TRIVIAL(info) << "window info: " << tchBuffer;
 
 
 			return false;
