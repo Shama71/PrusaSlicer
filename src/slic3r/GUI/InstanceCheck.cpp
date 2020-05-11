@@ -299,7 +299,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 	{
 		// TODO: write error handler
 	}
-	hResult = StringCchCopy(lpMem, 256, tchPath);
+	hResult = StringCchCopyA(lpMem, 256, tchPath);
 	if (FAILED(hResult))
 	{
 		// TO DO: write error handler if function fails.
