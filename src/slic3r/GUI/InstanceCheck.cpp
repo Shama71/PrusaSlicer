@@ -83,17 +83,20 @@ namespace instance_check_internal
 			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"PROP_BUFFER");
 			BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (WCHAR*)GlobalLock(hMemProp);
-			//hResult = StringCchPrintf(tchBuffer, PATHLENGTH,
-			//	"Path to file:  %s", lpFilename);
-			//if (FAILED(hResult))
-			//{
+			BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
+			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, "Path to file:  %s", lpFilename);
+			if (FAILED(hResult))
+			{
+				BOOST_LOG_TRIVIAL(debug) << "failed";
 				// TODO: write error handler if function fails.
-			//}
-			//hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
-			//if (FAILED(hResult))
-			//{
+			}
+			BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
+			hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
+			if (FAILED(hResult))
+			{
+				BOOST_LOG_TRIVIAL(debug) << "failed";
 				// TODO: write error handler if function fails.
-			//}
+			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << lpFilename;
 
