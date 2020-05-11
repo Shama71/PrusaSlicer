@@ -285,6 +285,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 
 #if _WIN32 
 	//create_listener_window();
+	/*
 	HWND      hwnd = wxGetApp().mainframe->GetHandle();
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
@@ -307,7 +308,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 	GlobalUnlock(hMem);
 	// Set the window properties for hwndSubclass. 
 	SetProp(hwnd, L"PROP_BUFFER", hMem);
-
+	*/
 #endif  //_WIN32
 
 #if defined(__APPLE__)
