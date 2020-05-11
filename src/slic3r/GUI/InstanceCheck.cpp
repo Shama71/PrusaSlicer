@@ -65,6 +65,36 @@ namespace instance_check_internal
 			l_prusa_slicer_hwnd = hwnd;
 			ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 			SetForegroundWindow(hwnd);
+
+
+#define PATHLENGTH 256 
+
+			HWND hwndSubclass;     // handle of a subclassed window 
+			HGLOBAL hMemProp;
+			char* lpFilename;
+			TCHAR tchBuffer[PATHLENGTH];
+			size_t* nSize;
+			HDC hdc;
+			HRESULT hResult;
+
+			// Get the window properties, then use the data. 
+			hMemProp = (HGLOBAL)GetProp(hwndSubclass, "PROP_BUFFER");
+			lpFilename = GlobalLock(hMemProp);
+			hResult = StringCchPrintf(tchBuffer, PATHLENGTH,
+				"Path to file:  %s", lpFilename);
+			if (FAILED(hResult))
+			{
+				// TODO: write error handler if function fails.
+			}
+			hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
+			if (FAILED(hResult))
+			{
+				// TODO: write error handler if function fails.
+			}
+			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
+			BOOST_LOG_TRIVIAL(info) << "window info: " << tchbuffer;
+
+
 			return false;
 		}
 		return true;
@@ -253,6 +283,29 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 
 #if _WIN32 
 	//create_listener_window();
+	HWND      hwnd = wxGetApp().mainframe->GetHandle();
+	HINSTANCE hinst;       // handle of current instance 
+	HGLOBAL   hMem;
+	char*     lpMem;
+	TCHAR     tchPath[] = "c:\\winnt\\samples\\winprop.c";
+	HRESULT   hResult;
+
+	// Allocate and fill a memory buffer. 
+	hMem = GlobalAlloc(GPTR, 4096);
+	lpMem = GlobalLock(hMem);
+	if (lpMem == NULL)
+	{
+		// TODO: write error handler
+	}
+	hResult = StringCchCopy(lpMem, STRSAFE_MAX_CCH, tchPath);
+	if (FAILED(hResult))
+	{
+		// TO DO: write error handler if function fails.
+	}
+	GlobalUnlock(hMem);
+	// Set the window properties for hwndSubclass. 
+	SetProp(hwnd, "PROP_BUFFER", hMem);
+
 #endif  //_WIN32
 
 #if defined(__APPLE__)
