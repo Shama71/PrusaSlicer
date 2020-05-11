@@ -288,18 +288,18 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 	HWND      hwnd = wxGetApp().mainframe->GetHandle();
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
-	char*     lpMem;
+	wchar*     lpMem;
 	TCHAR     tchPath[] = L"c:\\winnt\\samples\\winprop.c";
 	HRESULT   hResult;
 
 	// Allocate and fill a memory buffer. 
 	hMem = GlobalAlloc(GPTR, 4096);
-	lpMem = (char*)GlobalLock(hMem);
+	lpMem = (wchar*)GlobalLock(hMem);
 	if (lpMem == NULL)
 	{
 		// TODO: write error handler
 	}
-	hResult = StringCchCopyA(lpMem, 256, tchPath);
+	hResult = StringCchCopy(lpMem, 256, tchPath);
 	if (FAILED(hResult))
 	{
 		// TO DO: write error handler if function fails.
