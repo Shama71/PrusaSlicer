@@ -285,8 +285,9 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 
 #if _WIN32 
 	//create_listener_window();
-	/*
+	BOOST_LOG_TRIVIAL(debug) << "window info start";
 	HWND      hwnd = wxGetApp().mainframe->GetHandle();
+	BOOST_LOG_TRIVIAL(debug) << "got handle";
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
 	WCHAR* lpMem;
@@ -294,21 +295,25 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 	HRESULT   hResult;
 
 	// Allocate and fill a memory buffer. 
+	BOOST_LOG_TRIVIAL(debug) << "allocate + lock";
 	hMem = GlobalAlloc(GPTR, 4096);
 	lpMem = (WCHAR*)GlobalLock(hMem);
 	if (lpMem == NULL)
 	{
 		// TODO: write error handler
 	}
+	BOOST_LOG_TRIVIAL(debug) << "stringcchcopy";
 	hResult = StringCchCopy(lpMem, 256, tchPath);
 	if (FAILED(hResult))
 	{
 		// TO DO: write error handler if function fails.
 	}
+	BOOST_LOG_TRIVIAL(debug) << "unlock";
 	GlobalUnlock(hMem);
 	// Set the window properties for hwndSubclass. 
+	BOOST_LOG_TRIVIAL(debug) << "set prop";
 	SetProp(hwnd, L"PROP_BUFFER", hMem);
-	*/
+	BOOST_LOG_TRIVIAL(debug) << "window info end";
 #endif  //_WIN32
 
 #if defined(__APPLE__)
