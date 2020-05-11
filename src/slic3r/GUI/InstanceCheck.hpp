@@ -32,6 +32,8 @@ void    send_message_mac(const std::string& msg, const std::string& version);
 
 namespace GUI {
 
+class MainFrame;
+
 #if __linux__
     #define BACKGROUND_MESSAGE_LISTENER
 #endif // __linux__
@@ -51,7 +53,7 @@ public:
 	~OtherInstanceMessageHandler() { assert(!m_initialized); }
 
 	// inits listening, on each platform different. On linux starts background thread
-	void    init(wxEvtHandler* callback_evt_handler);
+	void    init(wxEvtHandler* callback_evt_handler, MainFrame* main_frame);
 	// stops listening, on linux stops the background thread
 	void    shutdown();
 
