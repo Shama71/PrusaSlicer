@@ -68,7 +68,7 @@ namespace instance_check_internal
 			ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 			SetForegroundWindow(hwnd);
 
-
+			BOOST_LOG_TRIVIAL(debug) << "window info start";
 #define PATHLENGTH 256 
 
 			HWND hwndSubclass;     // handle of a subclassed window 
@@ -78,9 +78,10 @@ namespace instance_check_internal
 			size_t* nSize;
 			HDC hdc;
 			HRESULT hResult;
-
+			BOOST_LOG_TRIVIAL(debug) << "getprop";
 			// Get the window properties, then use the data. 
 			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"PROP_BUFFER");
+			BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (char*)GlobalLock(hMemProp);
 			//hResult = StringCchPrintf(tchBuffer, PATHLENGTH,
 			//	"Path to file:  %s", lpFilename);
