@@ -374,7 +374,6 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	WCHAR* lpFilename;
 	TCHAR tchBuffer[256];
 	size_t* nSize;
-	HRESULT hResult;
 	//BOOST_LOG_TRIVIAL(debug) << "getprop";
 	// Get the window properties, then use the data. 
 	hMemProp = (HGLOBAL)GetProp(hwnd, L"PROP_BUFFER");
