@@ -290,7 +290,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainF
 
 #if _WIN32 
 	//create_listener_window();
-	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash()));
+	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
 	BOOST_LOG_TRIVIAL(debug) << "window info start";
 	HWND      hwnd = main_frame->GetHandle();
 	BOOST_LOG_TRIVIAL(debug) << "got handle";
