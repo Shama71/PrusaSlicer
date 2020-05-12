@@ -84,7 +84,7 @@ namespace instance_check_internal
 			BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (WCHAR*)GlobalLock(hMemProp);
 			BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
-			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%s", lpFilename);
+			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%S", lpFilename);
 			if (FAILED(hResult))
 			{
 				BOOST_LOG_TRIVIAL(debug) << "failed";
@@ -98,6 +98,7 @@ namespace instance_check_internal
 				// TODO: write error handler if function fails.
 			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
+			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << tchBuffer;
 
 
@@ -289,6 +290,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainF
 
 #if _WIN32 
 	//create_listener_window();
+	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash()));
 	BOOST_LOG_TRIVIAL(debug) << "window info start";
 	HWND      hwnd = main_frame->GetHandle();
 	BOOST_LOG_TRIVIAL(debug) << "got handle";
@@ -307,7 +309,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainF
 		// TODO: write error handler
 	}
 	BOOST_LOG_TRIVIAL(debug) << "stringcchcopy";
-	hResult = StringCchCopy(lpMem, 256, tchPath);
+	hResult = StringCchCopy(lpMem, 256, instance_hash.c_str());
 	if (FAILED(hResult))
 	{
 		// TO DO: write error handler if function fails.
