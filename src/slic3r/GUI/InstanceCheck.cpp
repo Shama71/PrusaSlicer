@@ -70,6 +70,7 @@ namespace instance_check_internal
 			//SetForegroundWindow(hwnd);
 
 			BOOST_LOG_TRIVIAL(debug) << "-----window info start";
+			BOOST_LOG_TRIVIAL(debug) << wndTextString <<" "<< classNameString;
 #define PATHLENGTH 256 
 
 			HWND hwndSubclass;     // handle of a subclassed window 
@@ -79,27 +80,27 @@ namespace instance_check_internal
 			size_t* nSize;
 			HDC hdc;
 			HRESULT hResult;
-			BOOST_LOG_TRIVIAL(debug) << "getprop";
+			//BOOST_LOG_TRIVIAL(debug) << "getprop";
 			// Get the window properties, then use the data. 
 			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"PROP_BUFFER");
-			BOOST_LOG_TRIVIAL(debug) << "global lock";
+			//BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (WCHAR*)GlobalLock(hMemProp);
-			BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
+			//BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
 			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%s", lpFilename);
 			if (FAILED(hResult))
 			{
-				BOOST_LOG_TRIVIAL(debug) << "failed";
+				//BOOST_LOG_TRIVIAL(debug) << "failed";
 				// TODO: write error handler if function fails.
 			}
-			BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
+			//BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
 			hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
 			if (FAILED(hResult))
 			{
-				BOOST_LOG_TRIVIAL(debug) << "failed";
+				//BOOST_LOG_TRIVIAL(debug) << "failed";
 				// TODO: write error handler if function fails.
 			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
-			BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
+			//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
 			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 
