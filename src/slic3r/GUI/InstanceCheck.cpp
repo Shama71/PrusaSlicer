@@ -63,12 +63,13 @@ namespace instance_check_internal
 		std::wstring classNameString(className);
 		std::wstring wndTextString(wndText);
 		std::wstring name_to_find = L"PrusaSlicer-" + l_version_wstring;
-		if (wndTextString.find(L"PrusaSlicer") != std::wstring::npos && classNameString == L"wxWindowNR") {
+		//if (wndTextString.find(L"PrusaSlicer") != std::wstring::npos && classNameString == L"wxWindowNR") {
+		{
 			l_prusa_slicer_hwnd = hwnd;
 			ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 			SetForegroundWindow(hwnd);
 
-			BOOST_LOG_TRIVIAL(debug) << "window info start";
+			BOOST_LOG_TRIVIAL(debug) << "-----window info start";
 #define PATHLENGTH 256 
 
 			HWND hwndSubclass;     // handle of a subclassed window 
@@ -98,7 +99,7 @@ namespace instance_check_internal
 				// TODO: write error handler if function fails.
 			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
-			BOOST_LOG_TRIVIAL(info) << "length: " << &nSize;
+			BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
 			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 
@@ -297,8 +298,15 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainF
 #if _WIN32 
 	//create_listener_window();
 	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
-	BOOST_LOG_TRIVIAL(debug) << "window info start";
-	HWND      hwnd = main_frame->GetHandle();
+	TCHAR 		 wndText[1000];
+	TCHAR 		 className[1000];
+	GetClassName(hwnd, className, 1000);
+	GetWindowText(hwnd, wndText, 1000);
+	std::wstring classNameString(className);
+	std::wstring wndTextString(wndText);
+
+	BOOST_LOG_TRIVIAL(debug) << "window info start " << classNameString << " " << wndTextString;
+	HWND      hwnd = main_frame->GetHandle(); 
 	BOOST_LOG_TRIVIAL(debug) << "got handle";
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
