@@ -66,8 +66,8 @@ namespace instance_check_internal
 		//if (wndTextString.find(L"PrusaSlicer") != std::wstring::npos && classNameString == L"wxWindowNR") {
 		{
 			l_prusa_slicer_hwnd = hwnd;
-			ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-			SetForegroundWindow(hwnd);
+			//ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+			//SetForegroundWindow(hwnd);
 
 			BOOST_LOG_TRIVIAL(debug) << "-----window info start";
 #define PATHLENGTH 256 
