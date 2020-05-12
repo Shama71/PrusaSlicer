@@ -102,8 +102,13 @@ namespace instance_check_internal
 			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 
-
-			return false;
+			std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
+			if(instance_hash == windinfo)
+			{
+				BOOST_LOG_TRIVIAL(info) << "enumerate success";
+				return false;
+			}
+			BOOST_LOG_TRIVIAL(info) << "enumerate: not a match";
 		}
 		return true;
 	}
