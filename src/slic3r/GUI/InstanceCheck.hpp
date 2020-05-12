@@ -53,7 +53,7 @@ public:
 	~OtherInstanceMessageHandler() { assert(!m_initialized); }
 
 	// inits listening, on each platform different. On linux starts background thread
-	void    init(wxEvtHandler* callback_evt_handler, MainFrame* main_frame);
+	void    init(wxEvtHandler* callback_evt_handler);
 	// stops listening, on linux stops the background thread
 	void    shutdown();
 
@@ -64,6 +64,7 @@ public:
 	//						mac - anybody who posts notification with name:@"OtherPrusaSlicerTerminating"
 	//						linux - instrospectable on dbus
 	void    handle_message(const std::string& message);
+	void    init_windows_properties(MainFrame* main_frame) const;
 private:
 	bool                    m_initialized { false };
 	wxEvtHandler*           m_callback_evt_handler { nullptr };

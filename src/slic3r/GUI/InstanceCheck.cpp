@@ -296,50 +296,6 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainF
 	m_initialized = true;
 	m_callback_evt_handler = callback_evt_handler;
 
-#if _WIN32 
-	//create_listener_window();
-	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
-	HWND         hwnd = main_frame->GetHandle();
-	TCHAR 		 wndText[1000];
-	TCHAR 		 className[1000];
-	GetClassName(hwnd, className, 1000);
-	GetWindowText(hwnd, wndText, 1000);
-	std::wstring classNameString(className);
-	std::wstring wndTextString(wndText);
-
-	BOOST_LOG_TRIVIAL(debug) << "window info start " << classNameString << " " << wndTextString;
-	
-	HINSTANCE hinst;       // handle of current instance 
-	HGLOBAL   hMem;
-	WCHAR* lpMem;
-	TCHAR     tchPath[] = L"c:\\winnt\\samples\\winprop.c";
-	HRESULT   hResult;
-
-	// Allocate and fill a memory buffer. 
-	BOOST_LOG_TRIVIAL(debug) << "allocate + lock";
-	hMem = GlobalAlloc(GPTR, 4096);
-	lpMem = (WCHAR*)GlobalLock(hMem);
-	if (lpMem == NULL)
-	{
-		BOOST_LOG_TRIVIAL(debug) << "failed";
-		// TODO: write error handler
-	}
-	BOOST_LOG_TRIVIAL(debug) << "stringcchcopy";
-	hResult = StringCchCopy(lpMem, 256, instance_hash.c_str());
-	if (FAILED(hResult))
-	{
-		BOOST_LOG_TRIVIAL(debug) << "failed";
-		// TO DO: write error handler if function fails.
-	}
-	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
-	BOOST_LOG_TRIVIAL(debug) << "unlock";
-	GlobalUnlock(hMem);
-	// Set the window properties for hwndSubclass. 
-	BOOST_LOG_TRIVIAL(debug) << "set prop";
-	SetProp(hwnd, L"PROP_BUFFER", hMem);
-	BOOST_LOG_TRIVIAL(debug) << "window info end";
-#endif  //_WIN32
-
 #if defined(__APPLE__)
 	this->register_for_messages(wxGetApp().get_instance_hash());
 #endif //__APPLE__
@@ -373,6 +329,52 @@ void OtherInstanceMessageHandler::shutdown()
 #endif //BACKGROUND_MESSAGE_LISTENER
 	m_initialized = false;
 	}
+}
+
+void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame) const
+{
+#if _WIN32 
+	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
+	HWND         hwnd = main_frame->GetHandle();
+	TCHAR 		 wndText[1000];
+	TCHAR 		 className[1000];
+	GetClassName(hwnd, className, 1000);
+	GetWindowText(hwnd, wndText, 1000);
+	std::wstring classNameString(className);
+	std::wstring wndTextString(wndText);
+
+	BOOST_LOG_TRIVIAL(debug) << "window info start " << classNameString << " " << wndTextString;
+
+	HINSTANCE hinst;       // handle of current instance 
+	HGLOBAL   hMem;
+	WCHAR* lpMem;
+	TCHAR     tchPath[] = L"c:\\winnt\\samples\\winprop.c";
+	HRESULT   hResult;
+
+	// Allocate and fill a memory buffer. 
+	BOOST_LOG_TRIVIAL(debug) << "allocate + lock";
+	hMem = GlobalAlloc(GPTR, 4096);
+	lpMem = (WCHAR*)GlobalLock(hMem);
+	if (lpMem == NULL)
+	{
+		BOOST_LOG_TRIVIAL(debug) << "failed";
+		// TODO: write error handler
+	}
+	BOOST_LOG_TRIVIAL(debug) << "stringcchcopy";
+	hResult = StringCchCopy(lpMem, 256, instance_hash.c_str());
+	if (FAILED(hResult))
+	{
+		BOOST_LOG_TRIVIAL(debug) << "failed";
+		// TO DO: write error handler if function fails.
+	}
+	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
+	BOOST_LOG_TRIVIAL(debug) << "unlock";
+	GlobalUnlock(hMem);
+	// Set the window properties for hwndSubclass. 
+	BOOST_LOG_TRIVIAL(debug) << "set prop";
+	SetProp(hwnd, L"PROP_BUFFER", hMem);
+	BOOST_LOG_TRIVIAL(debug) << "window info end";
+#endif  //_WIN32
 }
 
 namespace MessageHandlerInternal

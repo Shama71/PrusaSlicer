@@ -458,6 +458,8 @@ bool GUI_App::on_init_inner()
 				preset_updater->slic3r_update_notify();
 				preset_updater->sync(preset_bundle);
 				});
+
+			m_other_instance_message_handler->init_windows_properties(mainframe);
         }
     });
 
