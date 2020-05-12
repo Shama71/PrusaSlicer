@@ -286,7 +286,7 @@ namespace GUI {
 wxDEFINE_EVENT(EVT_LOAD_MODEL_OTHER_INSTANCE, LoadFromOtherInstanceEvent);
 wxDEFINE_EVENT(EVT_INSTANCE_GO_TO_FRONT, InstanceGoToFrontEvent);
 
-void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainFrame* main_frame)
+void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 {
 	assert(!m_initialized);
 	assert(m_callback_evt_handler == nullptr);
