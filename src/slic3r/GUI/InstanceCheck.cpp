@@ -378,6 +378,8 @@ void OtherInstanceMessageHandler::print_window_info(MainFrame* main_frame) const
 #if _WIN32 
 	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
 	HWND         hwnd = main_frame->GetHandle();
+	TCHAR 		 wndText[1000];
+	TCHAR 		 className[1000];
 	GetClassName(hwnd, className, 1000);
 	GetWindowText(hwnd, wndText, 1000);
 	std::wstring classNameString(className);
