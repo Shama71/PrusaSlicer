@@ -78,7 +78,6 @@ namespace instance_check_internal
 			WCHAR* lpFilename;
 			TCHAR tchBuffer[PATHLENGTH];
 			size_t* nSize;
-			HDC hdc;
 			HRESULT hResult;
 			//BOOST_LOG_TRIVIAL(debug) << "getprop";
 			// Get the window properties, then use the data. 
@@ -99,7 +98,6 @@ namespace instance_check_internal
 				//BOOST_LOG_TRIVIAL(debug) << "failed";
 				// TODO: write error handler if function fails.
 			}
-			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
 			//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
 			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
@@ -347,33 +345,58 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 
 	HINSTANCE hinst;       // handle of current instance 
 	HGLOBAL   hMem;
-	WCHAR* lpMem;
-	TCHAR     tchPath[] = L"c:\\winnt\\samples\\winprop.c";
+	WCHAR*    lpMem;
 	HRESULT   hResult;
 
 	// Allocate and fill a memory buffer. 
-	BOOST_LOG_TRIVIAL(debug) << "allocate + lock";
 	hMem = GlobalAlloc(GPTR, 4096);
 	lpMem = (WCHAR*)GlobalLock(hMem);
 	if (lpMem == NULL)
 	{
-		BOOST_LOG_TRIVIAL(debug) << "failed";
+		BOOST_LOG_TRIVIAL(debug) << "failed globlock";
 		// TODO: write error handler
 	}
-	BOOST_LOG_TRIVIAL(debug) << "stringcchcopy";
 	hResult = StringCchCopy(lpMem, 256, instance_hash.c_str());
 	if (FAILED(hResult))
 	{
-		BOOST_LOG_TRIVIAL(debug) << "failed";
+		BOOST_LOG_TRIVIAL(debug) << "failed stringcchcopy";
 		// TO DO: write error handler if function fails.
 	}
 	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
-	BOOST_LOG_TRIVIAL(debug) << "unlock";
 	GlobalUnlock(hMem);
 	// Set the window properties for hwndSubclass. 
-	BOOST_LOG_TRIVIAL(debug) << "set prop";
 	SetProp(hwnd, L"PROP_BUFFER", hMem);
 	BOOST_LOG_TRIVIAL(debug) << "window info end";
+
+	//----------------
+
+	HGLOBAL hMemProp;
+	WCHAR* lpFilename;
+	TCHAR tchBuffer[256];
+	size_t* nSize;
+	HRESULT hResult;
+	//BOOST_LOG_TRIVIAL(debug) << "getprop";
+	// Get the window properties, then use the data. 
+	hMemProp = (HGLOBAL)GetProp(hwnd, L"PROP_BUFFER");
+	//BOOST_LOG_TRIVIAL(debug) << "global lock";
+	lpFilename = (WCHAR*)GlobalLock(hMemProp);
+	//BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
+	hResult = StringCchPrintf(tchBuffer, 256, L"%s", lpFilename);
+	if (FAILED(hResult))
+	{
+		//BOOST_LOG_TRIVIAL(debug) << "failed";
+		// TODO: write error handler if function fails.
+	}
+	//BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
+	hResult = StringCchLength(tchBuffer, 256, nSize);
+	if (FAILED(hResult))
+	{
+		//BOOST_LOG_TRIVIAL(debug) << "failed";
+		// TODO: write error handler if function fails.
+	}
+	//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
+	std::wstring windinfo(tchBuffer);
+	BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 #endif  //_WIN32
 }
 
