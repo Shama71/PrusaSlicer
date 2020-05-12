@@ -65,7 +65,10 @@ public:
 	//						linux - instrospectable on dbus
 	void    handle_message(const std::string& message);
 	void    init_windows_properties(MainFrame* main_frame) const;
-	void    print_window_info(MainFrame* main_frame) const;
+	static void print_window_info(MainFrame* main_frame);
+#if _WIN32
+	static void print_window_info(HWND hwnd);
+#endif //_WIN32
 private:
 	bool                    m_initialized { false };
 	wxEvtHandler*           m_callback_evt_handler { nullptr };

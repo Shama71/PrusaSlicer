@@ -67,6 +67,7 @@ namespace instance_check_internal
 			l_prusa_slicer_hwnd = hwnd;
 			//ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 			//SetForegroundWindow(hwnd);
+			OtherInstanceMessageHandler::print_window_info(hwnd);
 
 			BOOST_LOG_TRIVIAL(debug) << "-----window info start";
 			BOOST_LOG_TRIVIAL(debug) << wndTextString <<" "<< classNameString;
@@ -373,11 +374,18 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 #endif  //_WIN32
 }
 
-void OtherInstanceMessageHandler::print_window_info(MainFrame* main_frame) const
+void OtherInstanceMessageHandler::print_window_info(MainFrame* main_frame)
 {
 #if _WIN32 
-	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
 	HWND         hwnd = main_frame->GetHandle();
+	OtherInstanceMessageHandler::print_window_info(hwnd);
+#endif  //_WIN32
+}
+
+#if _WIN32 
+void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
+{
+	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
 	TCHAR 		 wndText[1000];
 	TCHAR 		 className[1000];
 	GetClassName(hwnd, className, 1000);
@@ -412,8 +420,8 @@ void OtherInstanceMessageHandler::print_window_info(MainFrame* main_frame) const
 	//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
 	std::wstring windinfo(tchBuffer);
 	BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
-#endif  //_WIN32
 }
+#endif  //_WIN32
 
 namespace MessageHandlerInternal
 {
