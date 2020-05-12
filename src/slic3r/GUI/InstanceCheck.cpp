@@ -67,7 +67,7 @@ namespace instance_check_internal
 			l_prusa_slicer_hwnd = hwnd;
 			//ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 			//SetForegroundWindow(hwnd);
-			OtherInstanceMessageHandler::print_window_info(hwnd);
+			GUI::OtherInstanceMessageHandler::print_window_info(hwnd);
 
 			BOOST_LOG_TRIVIAL(debug) << "-----window info start";
 			BOOST_LOG_TRIVIAL(debug) << wndTextString <<" "<< classNameString;
