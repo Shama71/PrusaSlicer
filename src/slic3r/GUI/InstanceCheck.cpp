@@ -63,8 +63,7 @@ namespace instance_check_internal
 		std::wstring classNameString(className);
 		std::wstring wndTextString(wndText);
 		std::wstring name_to_find = L"PrusaSlicer-" + l_version_wstring;
-		//if (wndTextString.find(L"PrusaSlicer") != std::wstring::npos && classNameString == L"wxWindowNR") {
-		{
+		if (wndTextString.find(L"PrusaSlicer") != std::wstring::npos && classNameString == L"wxWindowNR") {
 			l_prusa_slicer_hwnd = hwnd;
 			//ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 			//SetForegroundWindow(hwnd);
@@ -81,7 +80,7 @@ namespace instance_check_internal
 			HRESULT hResult;
 			//BOOST_LOG_TRIVIAL(debug) << "getprop";
 			// Get the window properties, then use the data. 
-			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"PROP_BUFFER");
+			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"Instance_Hash");
 			//BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (WCHAR*)GlobalLock(hMemProp);
 			//BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
@@ -365,7 +364,7 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
 	GlobalUnlock(hMem);
 	// Set the window properties for hwndSubclass. 
-	SetProp(hwnd, L"PROP_BUFFER", hMem);
+	SetProp(hwnd, L"Instance_Hash", hMem);
 	BOOST_LOG_TRIVIAL(debug) << "window info end";
 
 	//----------------
@@ -376,7 +375,7 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	size_t* nSize;
 	//BOOST_LOG_TRIVIAL(debug) << "getprop";
 	// Get the window properties, then use the data. 
-	hMemProp = (HGLOBAL)GetProp(hwnd, L"PROP_BUFFER");
+	hMemProp = (HGLOBAL)GetProp(hwnd, L"Instance_Hash");
 	//BOOST_LOG_TRIVIAL(debug) << "global lock";
 	lpFilename = (WCHAR*)GlobalLock(hMemProp);
 	//BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
