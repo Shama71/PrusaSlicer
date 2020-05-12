@@ -461,6 +461,7 @@ bool GUI_App::on_init_inner()
 
 			m_other_instance_message_handler->init_windows_properties(mainframe);
         }
+		m_other_instance_message_handler->print_window_info(mainframe);
     });
 
     load_current_presets();

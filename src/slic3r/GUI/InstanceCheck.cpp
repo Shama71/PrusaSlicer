@@ -369,6 +369,21 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 
 	//----------------
 
+	//print_window_info(main_frame);
+#endif  //_WIN32
+}
+
+void OtherInstanceMessageHandler::print_window_info(MainFrame* main_frame) const
+{
+#if _WIN32 
+	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
+	HWND         hwnd = main_frame->GetHandle();
+	GetClassName(hwnd, className, 1000);
+	GetWindowText(hwnd, wndText, 1000);
+	std::wstring classNameString(className);
+	std::wstring wndTextString(wndText);
+	BOOST_LOG_TRIVIAL(debug) << "---window info start " << classNameString << " " << wndTextString;
+	HRESULT   hResult;
 	HGLOBAL hMemProp;
 	WCHAR* lpFilename;
 	TCHAR tchBuffer[256];
@@ -382,14 +397,14 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	hResult = StringCchPrintf(tchBuffer, 256, L"%s", lpFilename);
 	if (FAILED(hResult))
 	{
-		//BOOST_LOG_TRIVIAL(debug) << "failed";
+		BOOST_LOG_TRIVIAL(debug) << "failed StringCchPrintf";
 		// TODO: write error handler if function fails.
 	}
 	//BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
 	hResult = StringCchLength(tchBuffer, 256, nSize);
 	if (FAILED(hResult))
 	{
-		//BOOST_LOG_TRIVIAL(debug) << "failed";
+		BOOST_LOG_TRIVIAL(debug) << "failed StringCchLength";
 		// TODO: write error handler if function fails.
 	}
 	//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
