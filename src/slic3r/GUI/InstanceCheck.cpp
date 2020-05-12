@@ -84,7 +84,7 @@ namespace instance_check_internal
 			BOOST_LOG_TRIVIAL(debug) << "global lock";
 			lpFilename = (WCHAR*)GlobalLock(hMemProp);
 			BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
-			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%S", lpFilename);
+			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%s", lpFilename);
 			if (FAILED(hResult))
 			{
 				BOOST_LOG_TRIVIAL(debug) << "failed";
@@ -98,8 +98,9 @@ namespace instance_check_internal
 				// TODO: write error handler if function fails.
 			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
+			BOOST_LOG_TRIVIAL(info) << "length: " << nSize;
 			std::wstring windinfo(tchBuffer);
-			BOOST_LOG_TRIVIAL(info) << "window info: " << tchBuffer;
+			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 
 
 			return false;
@@ -306,14 +307,17 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler, MainF
 	lpMem = (WCHAR*)GlobalLock(hMem);
 	if (lpMem == NULL)
 	{
+		BOOST_LOG_TRIVIAL(debug) << "failed";
 		// TODO: write error handler
 	}
 	BOOST_LOG_TRIVIAL(debug) << "stringcchcopy";
 	hResult = StringCchCopy(lpMem, 256, instance_hash.c_str());
 	if (FAILED(hResult))
 	{
+		BOOST_LOG_TRIVIAL(debug) << "failed";
 		// TO DO: write error handler if function fails.
 	}
+	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
 	BOOST_LOG_TRIVIAL(debug) << "unlock";
 	GlobalUnlock(hMem);
 	// Set the window properties for hwndSubclass. 
