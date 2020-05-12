@@ -98,11 +98,11 @@ namespace instance_check_internal
 				// TODO: write error handler if function fails.
 			}
 			//TextOut(hdc, 10, 10, tchBuffer, *nSize);
-			BOOST_LOG_TRIVIAL(info) << "length: " << nSize;
+			BOOST_LOG_TRIVIAL(info) << "length: " << &nSize;
 			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 
-			std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
+			std::wstring instance_hash = boost::nowide::widen(GUI::wxGetApp().get_instance_hash());
 			if(instance_hash == windinfo)
 			{
 				BOOST_LOG_TRIVIAL(info) << "enumerate success";
