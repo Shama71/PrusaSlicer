@@ -430,7 +430,7 @@ void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
 	*/
 	HANDLE handle = GetProp(hwnd, L"Instance_Hash");
 	size_t result = PtrToUint(handle);
-	BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
+	BOOST_LOG_TRIVIAL(info) << "window info: " << result;
 }
 #endif  //_WIN32
 
