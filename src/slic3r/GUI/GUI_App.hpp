@@ -207,7 +207,7 @@ public:
 	void        init_single_instance_checker(const std::string &name, const std::string &path);
 	void        set_instance_hash (const size_t hash) { m_instance_hash_int = hash; m_instance_hash_string = std::to_string(hash); }
     std::string get_instance_hash_string ()           { return m_instance_hash_string; }
-	std::string get_instance_hash_int ()              { return m_instance_hash_int; }
+	size_t      get_instance_hash_int ()              { return m_instance_hash_int; }
 
     ImGuiWrapper* imgui() { return m_imgui.get(); }
 
