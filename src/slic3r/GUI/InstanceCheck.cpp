@@ -71,39 +71,14 @@ namespace instance_check_internal
 
 			BOOST_LOG_TRIVIAL(debug) << "-----window info start";
 			BOOST_LOG_TRIVIAL(debug) << wndTextString <<" "<< classNameString;
-#define PATHLENGTH 256 
+			HANDLE       handle = GetProp(hwnd, L"Instance_Hash_minor");
+			size_t       other_instance_hash = PtrToUint(handle);
+			handle = GetProp(hwnd, L"Instance_Hash_major");
+			other_instance_hash += PtrToUint(handle);
+			BOOST_LOG_TRIVIAL(info) << "window info: " << other_instance_hash;
 
-			HWND hwndSubclass;     // handle of a subclassed window 
-			HGLOBAL hMemProp;
-			WCHAR* lpFilename;
-			TCHAR tchBuffer[PATHLENGTH];
-			size_t* nSize;
-			HRESULT hResult;
-			//BOOST_LOG_TRIVIAL(debug) << "getprop";
-			// Get the window properties, then use the data. 
-			hMemProp = (HGLOBAL)GetProp(hwndSubclass, L"Instance_Hash");
-			//BOOST_LOG_TRIVIAL(debug) << "global lock";
-			lpFilename = (WCHAR*)GlobalLock(hMemProp);
-			//BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
-			hResult = StringCchPrintf(tchBuffer, PATHLENGTH, L"%s", lpFilename);
-			if (FAILED(hResult))
-			{
-				//BOOST_LOG_TRIVIAL(debug) << "failed";
-				// TODO: write error handler if function fails.
-			}
-			//BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
-			hResult = StringCchLength(tchBuffer, PATHLENGTH, nSize);
-			if (FAILED(hResult))
-			{
-				//BOOST_LOG_TRIVIAL(debug) << "failed";
-				// TODO: write error handler if function fails.
-			}
-			//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
-			std::wstring windinfo(tchBuffer);
-			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
-
-			std::wstring instance_hash = boost::nowide::widen(GUI::wxGetApp().get_instance_hash_string());
-			if(instance_hash == windinfo)
+			size_t my_instance_hash = get_instance_hash_int();
+			if(my_instance_hash == other_instance_hash)
 			{
 				BOOST_LOG_TRIVIAL(info) << "enumerate success";
 				return false;
@@ -333,55 +308,14 @@ void OtherInstanceMessageHandler::shutdown()
 void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame) const
 {
 #if _WIN32 
-	//std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash_string());
 	size_t       instance_hash = wxGetApp().get_instance_hash_int();
-	size_t       partial_hash = instance_hash & 0xFFFFFFFF;
+	size_t       minor_hash = instance_hash & 0xFFFFFFFF;
+	size_t       major_hash = instance_hash & 0xFFFFFFFF000000000;
 	HWND         hwnd = main_frame->GetHandle();
-	TCHAR 		 wndText[1000];
-	TCHAR 		 className[1000];
-	GetClassName(hwnd, className, 1000);
-	GetWindowText(hwnd, wndText, 1000);
-	std::wstring classNameString(className);
-	std::wstring wndTextString(wndText);
-
-	BOOST_LOG_TRIVIAL(debug) << "window info start " << classNameString << " " << wndTextString;
-
-	HINSTANCE hinst;       // handle of current instance 
-	HGLOBAL   hMem;
-	WCHAR*    lpMem;
-	HRESULT   hResult;
-
-	/*
-	// Allocate and fill a memory buffer. 
-	hMem = GlobalAlloc(GPTR, 4096);
-	lpMem = (WCHAR*)GlobalLock(hMem);
-	if (lpMem == NULL)
-	{
-		BOOST_LOG_TRIVIAL(debug) << "failed globlock";
-		// TODO: write error handler
-	}
-	hResult = StringCchCopy(lpMem, 256, instance_hash.c_str());
-	if (FAILED(hResult))
-	{
-		BOOST_LOG_TRIVIAL(debug) << "failed stringcchcopy";
-		// TO DO: write error handler if function fails.
-	}
-	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
-	GlobalUnlock(hMem);
-	*/
-	// Set the window properties for hwndSubclass. 
-
-	//void* UIntToPtr(const unsigned int ui)
-	BOOST_LOG_TRIVIAL(debug) << "hash: " << partial_hash;
-	HANDLE handle = UIntToPtr(partial_hash);
-	BOOST_LOG_TRIVIAL(debug) << "pointer to int: " << PtrToUint(handle);
-	BOOST_LOG_TRIVIAL(debug) << "pointer: " << handle;
-	SetProp(hwnd, L"Instance_Hash", handle);
-	BOOST_LOG_TRIVIAL(debug) << "window info end";
-
-	//----------------
-
-	//print_window_info(main_frame);
+	HANDLE       handle_minor = UIntToPtr(minor_hash);
+	HANDLE       handle_major = UIntToPtr(major_hash);
+	SetProp(hwnd, L"Instance_Hash_Minor", handle_minor);
+	SetProp(hwnd, L"Instance_Hash_Major", handle_major);
 #endif  //_WIN32
 }
 
@@ -404,36 +338,10 @@ void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
 	std::wstring classNameString(className);
 	std::wstring wndTextString(wndText);
 	BOOST_LOG_TRIVIAL(debug) << "---window info start " << classNameString << " " << wndTextString;
-	HRESULT   hResult;
-	HGLOBAL hMemProp;
-	WCHAR* lpFilename;
-	TCHAR tchBuffer[256];
-	size_t* nSize;
-	//BOOST_LOG_TRIVIAL(debug) << "getprop";
-	// Get the window properties, then use the data. 
-	/*
-	hMemProp = (HGLOBAL)GetProp(hwnd, L"Instance_Hash");
-	//BOOST_LOG_TRIVIAL(debug) << "global lock";
-	lpFilename = (WCHAR*)GlobalLock(hMemProp);
-	//BOOST_LOG_TRIVIAL(debug) << "StringCchPrintf";
-	hResult = StringCchPrintf(tchBuffer, 256, L"%s", lpFilename);
-	if (FAILED(hResult))
-	{
-		BOOST_LOG_TRIVIAL(debug) << "failed StringCchPrintf";
-		// TODO: write error handler if function fails.
-	}
-	//BOOST_LOG_TRIVIAL(debug) << "StringCchLength";
-	hResult = StringCchLength(tchBuffer, 256, nSize);
-	if (FAILED(hResult))
-	{
-		BOOST_LOG_TRIVIAL(debug) << "failed StringCchLength";
-		// TODO: write error handler if function fails.
-	}
-	//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
-	std::wstring windinfo(tchBuffer);
-	*/
-	HANDLE handle = GetProp(hwnd, L"Instance_Hash");
-	size_t result = PtrToUint(handle);
+	HANDLE       handle = GetProp(hwnd, L"Instance_Hash_minor");
+	size_t       result = PtrToUint(handle);
+	handle = GetProp(hwnd, L"Instance_Hash_major");
+	result += PtrToUint(handle);
 	BOOST_LOG_TRIVIAL(info) << "window info: " << result;
 }
 #endif  //_WIN32
