@@ -335,7 +335,7 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 #if _WIN32 
 	//std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash_string());
 	size_t       instance_hash = wxGetApp().get_instance_hash_int();
-	size_t       partial_hash = instance_hash & 0x100000000;
+	size_t       partial_hash = instance_hash & 0xFFFFFFFF;
 	HWND         hwnd = main_frame->GetHandle();
 	TCHAR 		 wndText[1000];
 	TCHAR 		 className[1000];
