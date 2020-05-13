@@ -74,7 +74,7 @@ namespace instance_check_internal
 			HANDLE       handle = GetProp(hwnd, L"Instance_Hash_minor");
 			size_t       other_instance_hash = PtrToUint(handle);
 			handle = GetProp(hwnd, L"Instance_Hash_major");
-			other_instance_hash += PtrToUint(handle);
+			other_instance_hash += (PtrToUint(handle)<<32);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << other_instance_hash;
 
 			size_t my_instance_hash = GUI::wxGetApp().get_instance_hash_int();
@@ -341,7 +341,7 @@ void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
 	HANDLE       handle = GetProp(hwnd, L"Instance_Hash_minor");
 	size_t       result = PtrToUint(handle);
 	handle = GetProp(hwnd, L"Instance_Hash_major");
-	result += PtrToUint(handle);
+	result += (PtrToUint(handle)<<32);
 	BOOST_LOG_TRIVIAL(info) << "window info: " << result;
 }
 #endif  //_WIN32
