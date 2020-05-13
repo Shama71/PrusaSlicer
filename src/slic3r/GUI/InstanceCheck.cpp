@@ -371,7 +371,10 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	// Set the window properties for hwndSubclass. 
 
 	//void* UIntToPtr(const unsigned int ui)
+	BOOST_LOG_TRIVIAL(debug) << "hash: " << instance_hash;
 	HANDLE handle = UIntToPtr(instance_hash);
+	BOOST_LOG_TRIVIAL(debug) << "pointer to int: " << PtrToUint(handle);
+	BOOST_LOG_TRIVIAL(debug) << "pointer: " << handle;
 	SetProp(hwnd, L"Instance_Hash", handle);
 	BOOST_LOG_TRIVIAL(debug) << "window info end";
 
