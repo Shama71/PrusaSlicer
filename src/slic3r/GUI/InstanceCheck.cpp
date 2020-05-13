@@ -102,7 +102,7 @@ namespace instance_check_internal
 			std::wstring windinfo(tchBuffer);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 
-			std::wstring instance_hash = boost::nowide::widen(GUI::wxGetApp().get_instance_hash());
+			std::wstring instance_hash = boost::nowide::widen(GUI::wxGetApp().get_instance_hash_string());
 			if(instance_hash == windinfo)
 			{
 				BOOST_LOG_TRIVIAL(info) << "enumerate success";
@@ -263,7 +263,8 @@ bool instance_check(int argc, char** argv, bool app_config_single_instance,const
 	//boost::erase_all(full_path, ".");
 	//full_path.erase(std::remove_if(full_path.begin(), full_path.end(), '/'), full_path.end());
 	//full_path.erase(std::remove_if(full_path.begin(), full_path.end(), '.'), full_path.end());
-
+	//2355114660759326061
+	
 	std::size_t hashed_path = std::hash<std::string>{}(boost::filesystem::system_complete(argv[0]).string());
 	std::string lock_name 	= std::to_string(hashed_path);
 	BOOST_LOG_TRIVIAL(debug) <<"full path: "<< lock_name;
@@ -274,7 +275,7 @@ bool instance_check(int argc, char** argv, bool app_config_single_instance,const
 		BOOST_LOG_TRIVIAL(info) << "instance check: Another instance found. This instance will terminate.";
 		return true;
 	}
-	GUI::wxGetApp().set_instance_hash(lock_name);
+	GUI::wxGetApp().set_instance_hash(hashed_path);
 	BOOST_LOG_TRIVIAL(info) << "instance check: Another instance not found or single-instance not set.";
 	return false;
 }
@@ -295,7 +296,7 @@ void OtherInstanceMessageHandler::init(wxEvtHandler* callback_evt_handler)
 	m_callback_evt_handler = callback_evt_handler;
 
 #if defined(__APPLE__)
-	this->register_for_messages(wxGetApp().get_instance_hash());
+	this->register_for_messages(wxGetApp().get_instance_hash_string());
 #endif //__APPLE__
 
 #ifdef BACKGROUND_MESSAGE_LISTENER
@@ -332,7 +333,8 @@ void OtherInstanceMessageHandler::shutdown()
 void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame) const
 {
 #if _WIN32 
-	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
+	//std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash_string());
+	size_t       instance_hash = wxGetApp().get_instance_hash_int();
 	HWND         hwnd = main_frame->GetHandle();
 	TCHAR 		 wndText[1000];
 	TCHAR 		 className[1000];
@@ -348,6 +350,7 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	WCHAR*    lpMem;
 	HRESULT   hResult;
 
+	/*
 	// Allocate and fill a memory buffer. 
 	hMem = GlobalAlloc(GPTR, 4096);
 	lpMem = (WCHAR*)GlobalLock(hMem);
@@ -364,8 +367,12 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 	}
 	BOOST_LOG_TRIVIAL(debug) << "lpMem: " << lpMem;
 	GlobalUnlock(hMem);
+	*/
 	// Set the window properties for hwndSubclass. 
-	SetProp(hwnd, L"Instance_Hash", hMem);
+
+	//void* UIntToPtr(const unsigned int ui)
+	HANDLE handle = UIntToPtr(instance_hash);
+	SetProp(hwnd, L"Instance_Hash", handle);
 	BOOST_LOG_TRIVIAL(debug) << "window info end";
 
 	//----------------
@@ -385,7 +392,7 @@ void OtherInstanceMessageHandler::print_window_info(MainFrame* main_frame)
 #if _WIN32 
 void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
 {
-	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash());
+	std::wstring instance_hash = boost::nowide::widen(wxGetApp().get_instance_hash_string());
 	TCHAR 		 wndText[1000];
 	TCHAR 		 className[1000];
 	GetClassName(hwnd, className, 1000);
@@ -400,6 +407,7 @@ void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
 	size_t* nSize;
 	//BOOST_LOG_TRIVIAL(debug) << "getprop";
 	// Get the window properties, then use the data. 
+	/*
 	hMemProp = (HGLOBAL)GetProp(hwnd, L"Instance_Hash");
 	//BOOST_LOG_TRIVIAL(debug) << "global lock";
 	lpFilename = (WCHAR*)GlobalLock(hMemProp);
@@ -419,6 +427,9 @@ void OtherInstanceMessageHandler::print_window_info(HWND hwnd)
 	}
 	//BOOST_LOG_TRIVIAL(info) << "length: " << *nSize;
 	std::wstring windinfo(tchBuffer);
+	*/
+	HANDLE handle = GetProp(hwnd, L"Instance_Hash");
+	size_t result = PtrToUint(handle);
 	BOOST_LOG_TRIVIAL(info) << "window info: " << windinfo;
 }
 #endif  //_WIN32
@@ -537,7 +548,7 @@ namespace MessageHandlerDBusInternal
 	{
 		const char* interface_name = dbus_message_get_interface(message);
 	    const char* member_name    = dbus_message_get_member(message);
-	    std::string our_interface  = "com.prusa3d.prusaslicer.InstanceCheck.Object" + wxGetApp().get_instance_hash();
+	    std::string our_interface  = "com.prusa3d.prusaslicer.InstanceCheck.Object" + wxGetApp().get_instance_hash_string();
 	    BOOST_LOG_TRIVIAL(trace) << "DBus message received: interface: " << interface_name << ", member: " << member_name;
 	    if (0 == strcmp("org.freedesktop.DBus.Introspectable", interface_name) && 0 == strcmp("Introspect", member_name)) {		
 	        respond_to_introspect(connection, message);
@@ -556,7 +567,7 @@ void OtherInstanceMessageHandler::listen()
     DBusError 			 err;
     int 				 name_req_val;
     DBusObjectPathVTable vtable;
-    std::string 		 instance_hash  = wxGetApp().get_instance_hash();
+    std::string 		 instance_hash  = wxGetApp().get_instance_hash_string();
 	std::string			 interface_name = "com.prusa3d.prusaslicer.InstanceCheck.Object" + instance_hash;
     std::string			 object_name 	= "/com/prusa3d/prusaslicer/InstanceCheck/Object" + instance_hash;
 

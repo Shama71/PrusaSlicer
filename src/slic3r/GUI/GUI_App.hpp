@@ -112,7 +112,8 @@ class GUI_App : public wxApp
     ConfigWizard* m_wizard;    // Managed by wxWindow tree
 	std::unique_ptr <OtherInstanceMessageHandler> m_other_instance_message_handler;
     std::unique_ptr <wxSingleInstanceChecker> m_single_instance_checker;
-    std::string m_instance_hash;
+    std::string m_instance_hash_string;
+	size_t m_instance_hash_int;
 public:
     bool            OnInit() override;
     bool            initialized() const { return m_initialized; }
@@ -202,9 +203,11 @@ public:
 	RemovableDriveManager* removable_drive_manager() { return m_removable_drive_manager.get(); }
 	OtherInstanceMessageHandler* other_instance_message_handler() { return m_other_instance_message_handler.get(); }
     wxSingleInstanceChecker* single_instance_checker() {return m_single_instance_checker.get();}
-    void init_single_instance_checker(const std::string &name, const std::string &path);
-    void set_instance_hash(const std::string& hash) {m_instance_hash = hash;}
-    std::string get_instance_hash() {return m_instance_hash;}
+    
+	void        init_single_instance_checker(const std::string &name, const std::string &path);
+	void        set_instance_hash (const size_t hash) { m_instance_hash_int = hash; m_instance_hash_string = std::to_string(hash); }
+    std::string get_instance_hash_string ()           { return m_instance_hash_string; }
+	std::string get_instance_hash_int ()              { return m_instance_hash_int; }
 
     ImGuiWrapper* imgui() { return m_imgui.get(); }
 
