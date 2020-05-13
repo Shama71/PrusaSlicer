@@ -77,7 +77,7 @@ namespace instance_check_internal
 			other_instance_hash += PtrToUint(handle);
 			BOOST_LOG_TRIVIAL(info) << "window info: " << other_instance_hash;
 
-			size_t my_instance_hash = get_instance_hash_int();
+			size_t my_instance_hash = GUI::wxGetApp().get_instance_hash_int();
 			if(my_instance_hash == other_instance_hash)
 			{
 				BOOST_LOG_TRIVIAL(info) << "enumerate success";
@@ -310,7 +310,7 @@ void OtherInstanceMessageHandler::init_windows_properties(MainFrame* main_frame)
 #if _WIN32 
 	size_t       instance_hash = wxGetApp().get_instance_hash_int();
 	size_t       minor_hash = instance_hash & 0xFFFFFFFF;
-	size_t       major_hash = instance_hash & 0xFFFFFFFF000000000;
+	size_t       major_hash = instance_hash & 0xFFFFFFFF00000000;
 	HWND         hwnd = main_frame->GetHandle();
 	HANDLE       handle_minor = UIntToPtr(minor_hash);
 	HANDLE       handle_major = UIntToPtr(major_hash);
